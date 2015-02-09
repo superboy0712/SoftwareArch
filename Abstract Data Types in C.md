@@ -61,3 +61,21 @@ Parts of the program that need to use stacks would then contain a line
 ```c
 	#include "stack.h"
 ```
+(Often the ".c" file also includes the corresponding ".h" file, as shown above, to insure consistency of function and type declarations.) The program would call InitStack to set up a stack, receiving in return a pointer of type StackType; it would access the stack by passing this pointer to Push, Pop, etc. Such a program would work no matter what the contents of stack.c, provided only that the implemented functions performed as specified in stack.h.
+
+One more subtlety: It occasionally happens that a module #includes more than one .h file, and the second .h file also #includes the first. This produces compiler complaints about definitions occurring more than once. The way to avoid these complaints is to use C's conditional compiling facility (described in K&R section 4.11.3) to make sure definitions only appear once to the compiler. Here is an example of its use with the stack code above.
+```c
+	#ifndef STACK		/* any suggestive variable name is fine */
+	#define STACK		/* define it if it's not already defined */
+	typedef struct StackStructType *StackType;
+	/* Return a pointer to an empty stack. */
+	extern StackType InitStack ( );
+	/* Push value onto the stack, returning success flag. */
+	extern boolean Push (int k);
+	/* Pop value from the stack, returning success flag. */
+	extern boolean Pop ( );
+	/* Print the elements of the stack. */
+	extern PrintStack (StackType stack);
+	#endif
+```
+The first time the stack.h file is encountered, the STACK variable won't (shouldn't) have been defined, so the body of the #ifndef is compiled. Since the body provides a definition of STACK, subsequent inclusions of stack.h will bypass the body, thereby avoiding multiple definitions of InitStack, Push, Pop, and PrintStack. 
