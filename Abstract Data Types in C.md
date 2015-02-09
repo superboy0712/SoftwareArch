@@ -55,7 +55,7 @@ The abstract data type "stack" might then be represented as follows:
 		stack->nItems = 0;
 		return (stack);
 	}
-	```
+```
 
 Parts of the program that need to use stacks would then contain a line
 ```c
